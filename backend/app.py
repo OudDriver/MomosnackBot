@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 from flask_socketio import SocketIO
-from bot import run_bot, message_queue, Session, Message, bot_running
+from bot import run_bot, message_queue, Session, Message
 import threading
 import queue
 import os
@@ -42,9 +42,8 @@ def emit_messages():
             continue
 
 if __name__ == '__main__':
-    if not bot_running:  # Avoid starting another instance of the bot
-        bot_thread = threading.Thread(target=run_bot)
-        bot_thread.start()
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.start()
 
     emitter_thread = threading.Thread(target=emit_messages)
     emitter_thread.start()
