@@ -6,7 +6,7 @@ import queue
 import re
 import json
 import time
-from utils.leaderboardOps import *
+from utils.leaderboardOps import update_message_count, get_leaderboard_data
 
 # Database setup
 engine = create_engine('sqlite:///messages.db') 
@@ -37,6 +37,43 @@ cooldowns = {}
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
+
+@bot.command(name='leaderboard', help='Displays the leaderboard')
+async def leaderboard(ctx: commands.Context):
+    with Session() as session:
+        leaderboard_data = get_leaderboard_data(session)
+        
+        if not leaderboard_data:
+            await ctx.send("The leaderboard is currently empty.")
+            return
+        
+        leaderboard_message = "🏆 **Leaderboard** 🏆\n\n"
+        for idx, entry in enumerate(leaderboard_data, start=1):
+            leaderboard_message += f"{idx}. {entry['author']} - {entry['amount']} momosnacks\n"
+        
+        await ctx.send(leaderboard_message)
+
+@bot.command(name='resetdb', help='Resets the database (admin only)')
+@commands.has_permissions(administrator=True)  # Restrict to admins
+async def reset_database(ctx: commands.Context):
+    with Session() as session:
+        try:
+            session.query(Message).delete()
+            session.commit()
+            await ctx.send("Database reset successfully!")
+        except Exception as e:
+            await ctx.send(f"Error resetting database: {e}")
+            
+@bot.command(name="eat", help="Eats a momosnack")
+async def eat(ctx: commands.Context):
+    with Session() as session:
+        existing_message = session.query(Message).filter_by(author=str(ctx.author)).first()
+        if not existing_message or existing_message.amount == 0:
+            await ctx.reply("You don't have any momosnacks 😦")
+            return
+        
+        update_message_count(session, ctx.author, ctx.message.created_at, increment=False)
+        message_queue.put({'leaderboard': get_leaderboard_data(session)})
 
 @bot.event
 async def on_message(message: discord.message.Message):
@@ -76,17 +113,9 @@ async def on_message(message: discord.message.Message):
                 await message.reply(finalMessage)
                     
             message_queue.put({'leaderboard': get_leaderboard_data(session)})
-                
-        elif message.content.startswith("!eat"):
-            existing_message = session.query(Message).filter_by(author=str(message.author)).first()
-            if not existing_message or existing_message.amount == 0:
-                await message.reply("You don't have any momosnacks 😦")
-                return
 
-            update_message_count(session, message, increment=False)
-            message_queue.put({'leaderboard': get_leaderboard_data(session)})
+        await bot.process_commands(message)
 
-1
 def run_bot():
     global bot_running
     if bot_running:

@@ -19,7 +19,7 @@ def index():
     session.close()
 
     # Convert messages to a list of dictionaries
-    messages_data = [{'amount': msg.amount, 'author': msg.author, 'latestTimeStamp': msg.latestTimeStamp.isoformat()} for msg in messages]
+    messages_data = [{'amount': msg.amount, 'author': msg.author, 'latestTimeStamp': msg.latestTimeStamp} for msg in messages]
 
     return render_template('index.html', initial_messages=messages_data)
 
@@ -29,7 +29,7 @@ def get_initial_messages():
     leaderboard = session.query(Message).order_by(Message.amount.desc()).all()
     session.close()
 
-    leaderboard_data = [{'author': msg.author, 'amount': msg.amount, 'latestTimeStamp': msg.latestTimeStamp.isoformat()} for msg in leaderboard]
+    leaderboard_data = [{'author': msg.author, 'amount': msg.amount, 'latestTimeStamp': msg.latestTimeStamp} for msg in leaderboard]
     return jsonify(leaderboard_data)
 
 def emit_messages():

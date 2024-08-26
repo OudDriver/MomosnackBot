@@ -56,6 +56,11 @@ function App() {
     prevLeaderboard.current = leaderboard;
   }, [leaderboard]);
 
+  const formatTimestampWithTimezone = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', { timeZoneName: 'short' });
+  };
+
   return (
     <div className="container">
       <h1 className="title">Momosnacks Leaderboard</h1>
@@ -64,9 +69,9 @@ function App() {
           <li key={index} className="message-item">
             <span className="author">{entry.author}:</span>
             <span className="amount"> {entry.amount} momosnacks(s) </span>
-            <span className="timestamp">{entry.latestTimeStamp}</span>
+            <span className="timestamp">{formatTimestampWithTimezone(entry.latestTimeStamp)}</span> 
           </li>
-        ))}
+        ))} 
       </ul>
     </div>
   );

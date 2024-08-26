@@ -25,10 +25,14 @@ body {
 }
 
 .message-item {
-    padding: 10px;
     border-bottom: 1px solid #555;
     border-radius: 5px; /* Rounded corners for list items */
     transition: background-color 0.3s ease, transform 0.3s ease; /* Animation for changes */
+    display: flex;
+    flex-wrap: wrap; /* Allows content to wrap */
+    justify-content: space-between;
+    align-items: flex-start; /* Align items to the top */
+    padding: 10px;
 }
 
 .message-item:hover {
@@ -45,16 +49,18 @@ body {
 .author {
     font-weight: bold;
     color: #aaddff; /* Light blue color for author */
+    margin-right: 8px;
 }
 
 .amount {
     color: #ffcc88; /* Light orange color for amount */
+    margin-right: auto;
 }
 
 .timestamp {
-    font-size: smaller;
-    color: #777;
     text-align: right;
+    width: 100%; /* Makes the timestamp take up full width on small screens */
+    margin-top: 5px; /* Adds some space above the timestamp */
 }
 
 .message-content {
@@ -62,30 +68,41 @@ body {
 }
 
 .amount-changed {
-  animation: amountChange 1s ease;
+    animation: amountChange 1s ease;
 }
 
 @keyframes amountChange {
-  0% {
-    background-color: #888; /* Green for increase */
-  }
-  100% {
-    background-color: #333; /* Back to normal */
-  }
+    0% {
+        background-color: #888; /* Green for increase */
+    }
+    100% {
+        background-color: #333; /* Back to normal */
+    }
 }
 
 /* Animation for position changes */
 .position-changed {
-  animation: positionChange 1s ease;
+    animation: positionChange 1s ease;
 }
 
 @keyframes positionChange {
-  0% {
-    transform: translateX(20px); /* Move to the right */
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
+    0% {
+        transform: translateX(20px); /* Move to the right */
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
+
+@media (max-width: 480px) { 
+    .message-item {
+      font-size: 14px;
+    }
+  
+    .author, .amount {
+      width: 100%; 
+      margin-bottom: 5px;
+    }
+  }
