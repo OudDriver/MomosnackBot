@@ -1,4 +1,5 @@
 config.json
+rules.json
 
 # dependencies
 node_modules/
