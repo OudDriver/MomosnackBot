@@ -1,6 +1,8 @@
 config.json
 rules.json
 
+test/
+
 # dependencies
 node_modules/
 .pnp

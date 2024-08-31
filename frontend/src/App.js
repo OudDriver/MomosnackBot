@@ -57,8 +57,9 @@ function App() {
   }, [leaderboard]);
 
   const formatTimestampWithTimezone = (timestamp) => {
+    console.log(timestamp)
     const date = new Date(timestamp);
-    return date.toLocaleString('en-US', { timeZoneName: 'short' });
+    return date.toLocaleString();
   };
 
   return (
